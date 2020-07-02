@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 8f7e64fc93e433243a927b421530c243
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Slot1Btn: {instanceID: 0}
+  - Slot2Btn: {instanceID: 0}
+  - Slot3Btn: {instanceID: 0}
+  - Slot4Btn: {instanceID: 0}
+  - Slot5Btn: {instanceID: 0}
+  - Slot6Btn: {instanceID: 0}
+  - Slot7Btn: {instanceID: 0}
+  - Slot8Btn: {instanceID: 0}
+  - Slot9Btn: {instanceID: 0}
+  - Cruz: {fileID: 21300000, guid: d9c2430a6eca29c4e970284620b40e8d, type: 3}
+  - Circulo: {fileID: 21300000, guid: 971bcdaa6776e3c4da35c542288fa800, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
