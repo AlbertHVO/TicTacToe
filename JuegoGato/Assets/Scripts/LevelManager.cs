@@ -7,10 +7,11 @@ using UnityEngine.UI;
 public class LevelManager : MonoBehaviour
 {
     // Variables Privadas 
-    private int[] Tablero;
-    bool empate = false;
-    bool ganaste = false;
-    bool perdiste = false;
+    private GameObject IA;
+    private GameObject Beginner;
+    private bool gameOver = false;
+    private int[,] Tablero = new int[3,3];
+    //int ganador = -1; // 0 = empate, 1 = ganaste, 2 = perdiste
 
     // Varibles Publicas 
     public Button Slot1Btn;
@@ -31,256 +32,278 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Tablero = new int[9];
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 3; i++)
         {
-            Tablero[i] = 0;
+            for(int j = 0; j < 3; j++)
+            {
+                Tablero[i, j] = 0;
+            }
+        }
+        IA = GameObject.Find("IA");
+        Beginner = GameObject.Find("BeginnerManager");
+        if(Beginner.GetComponent<Beginner>().getBeginner() == 2)
+        {
+            IA.GetComponent<IAscript>().tomarDesicion();
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
-    public int[] getTablero()
+    public int[,] getTablero()
     {
         return Tablero;
     }
 
     public void escogerCasillaPlayer(int _casilla)
     {
-        if(Tablero[_casilla - 1] == 0)
+        bool elegida = false;
+        if (_casilla == 1)
         {
-            Tablero[_casilla - 1] = 1;
-            colocarMarca(_casilla, 1);
-            checarCasillas();
-            if(!ganaste && !perdiste)
+            if(Tablero[0, 0] == 0)
             {
-                checarEmpate();
+                Tablero[0, 0] = 1;
+                Slot1Btn.image.sprite = Cruz;
+                elegida = true;
             }
-            if (!empate && !ganaste && !perdiste)
+        }
+        if (_casilla == 2)
+        {
+            if (Tablero[0, 1] == 0)
             {
-                escogerCasillaCPU();
+                Tablero[0, 1] = 1;
+                Slot2Btn.image.sprite = Cruz;
+                elegida = true;
             }
+        }
+        if (_casilla == 3)
+        {
+            if (Tablero[0, 2] == 0)
+            {
+                Tablero[0, 2] = 1;
+                Slot3Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        if (_casilla == 4)
+        {
+            if (Tablero[1, 0] == 0)
+            {
+                Tablero[1, 0] = 1;
+                Slot4Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        if (_casilla == 5)
+        {
+            if (Tablero[1, 1] == 0)
+            {
+                Tablero[1, 1] = 1;
+                Slot5Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        if (_casilla == 6)
+        {
+            if (Tablero[1, 2] == 0)
+            {
+                Tablero[1, 2] = 1;
+                Slot6Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        if (_casilla == 7)
+        {
+            if (Tablero[2, 0] == 0)
+            {
+                Tablero[2, 0] = 1;
+                Slot7Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        if (_casilla == 8)
+        {
+            if (Tablero[2, 1] == 0)
+            {
+                Tablero[2, 1] = 1;
+                Slot8Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        if (_casilla == 9)
+        {
+            if (Tablero[2, 2] == 0)
+            {
+                Tablero[2, 2] = 1;
+                Slot9Btn.image.sprite = Cruz;
+                elegida = true;
+            }
+        }
+        checarCasillas();
+        checarEmpate();
+        if (!gameOver && elegida == true)
+        {
+            IA.GetComponent<IAscript>().tomarDesicion();
         }
     }
 
-    public void escogerCasillaCPU()
+    public void escogerCasillaCPU(int _x, int _y)
     {
-        bool encontrado = false;
-        int _casilla = 0;
-        while (!encontrado)
+        Tablero[_x, _y] = 2;
+        if(_x == 0 && _y == 0)
         {
-            _casilla = Random.Range(0, 8);
-            if (Tablero[_casilla] == 0)
-            {
-                Tablero[_casilla] = 2;
-                colocarMarca(_casilla+1, 2);
-                checarCasillas();
-                encontrado = true;
-            }
+            Slot1Btn.image.sprite = Circulo;
         }
+        if (_x == 0 && _y == 1)
+        {
+            Slot2Btn.image.sprite = Circulo;
+        }
+        if (_x == 0 && _y == 2)
+        {
+            Slot3Btn.image.sprite = Circulo;
+        }
+        if (_x == 1 && _y == 0)
+        {
+            Slot4Btn.image.sprite = Circulo;
+        }
+        if (_x == 1 && _y == 1)
+        {
+            Slot5Btn.image.sprite = Circulo;
+        }
+        if (_x == 1 && _y == 2)
+        {
+            Slot6Btn.image.sprite = Circulo;
+        }
+        if (_x == 2 && _y == 0)
+        {
+            Slot7Btn.image.sprite = Circulo;
+        }
+        if (_x == 2 && _y == 1)
+        {
+            Slot8Btn.image.sprite = Circulo;
+        }
+        if (_x == 2 && _y == 2)
+        {
+            Slot9Btn.image.sprite = Circulo;
+        }
+        checarCasillas();
+        checarEmpate();
     }
 
     public void checarCasillas()
     {
-        if(Tablero[0] == 1 && Tablero[1] == 1 && Tablero[2] == 1)
+        int puntPlayer = 0;
+        int puntCPU = 0;
+
+        // Horizontales
+        for(int i = 0; i < 3; i++)
         {
-            cargarWin();
+            for(int j = 0; j < 3; j++)
+            {
+                if(Tablero[i, j] == 1)
+                {
+                    puntPlayer++;
+                }
+                if (Tablero[i, j] == 2)
+                {
+                    puntCPU++;
+                }
+                if(puntPlayer == 3)
+                {
+                    cargarWin();
+                }
+                if (puntCPU == 3)
+                {
+                    cargarLose();
+                }
+            }
+            puntPlayer = 0;
+            puntCPU = 0;
         }
 
-        if (Tablero[0] == 2 && Tablero[1] == 2 && Tablero[2] == 2)
+        puntPlayer = 0;
+        puntCPU = 0;
+
+        // Verticales
+        for (int i = 0; i < 3; i++)
         {
-            cargarLose();
+            for (int j = 0; j < 3; j++)
+            {
+                if (Tablero[j, i] == 1)
+                {
+                    puntPlayer++;
+                }
+                if (Tablero[j, i] == 2)
+                {
+                    puntCPU++;
+                }
+                if (puntPlayer == 3)
+                {
+                    cargarWin();
+                }
+                if (puntCPU == 3)
+                {
+                    cargarLose();
+                }
+            }
+            puntPlayer = 0;
+            puntCPU = 0;
         }
-        if (Tablero[0] == 1 && Tablero[3] == 1 && Tablero[6] == 1)
-        {
+
+        if (Tablero[0, 0] == 1 && Tablero[1, 1] == 1 && Tablero[2, 2] == 1){
             cargarWin();
         }
-        if (Tablero[0] == 2 && Tablero[3] == 2 && Tablero[6] == 2)
-        {
+        if (Tablero[0, 0] == 2 && Tablero[1, 1] == 2 && Tablero[2, 2] == 2){
             cargarLose();
         }
 
-        if (Tablero[2] == 1 && Tablero[5] == 1 && Tablero[8] == 1)
+        if (Tablero[0, 2] == 1 && Tablero[1, 1] == 1 && Tablero[2, 0] == 1)
         {
             cargarWin();
         }
-        if (Tablero[2] == 2 && Tablero[5] == 2 && Tablero[8] == 2)
+        if (Tablero[0, 2] == 2 && Tablero[1, 1] == 2 && Tablero[2, 0] == 2)
         {
             cargarLose();
         }
+    }
 
-        if (Tablero[6] == 1 && Tablero[7] == 1 && Tablero[8] == 1)
+    public void checarEmpate()
+    {
+        int cont = 0;
+        for(int i = 0; i < 3; i++)
         {
-            cargarWin();
+            for (int j = 0; j < 3; j++)
+            {
+                if(Tablero[i, j] != 0)
+                {
+                    cont++;
+                }
+            }
         }
-        if (Tablero[6] == 2 && Tablero[7] == 2 && Tablero[8] == 2)
+        if(cont == 9)
         {
-            cargarLose();
-        }
-
-        if (Tablero[1] == 1 && Tablero[4] == 1 && Tablero[7] == 1)
-        {
-            cargarWin();
-        }
-        if (Tablero[1] == 2 && Tablero[4] == 2 && Tablero[7] == 2)
-        {
-            cargarLose();
-        }
-
-        if (Tablero[3] == 1 && Tablero[4] == 1 && Tablero[5] == 1)
-        {
-            cargarWin();
-        }
-        if (Tablero[3] == 2 && Tablero[4] == 2 && Tablero[5] == 2)
-        {
-            cargarLose();
-        }
-
-        if (Tablero[2] == 1 && Tablero[4] == 1 && Tablero[6] == 1)
-        {
-            cargarWin();
-        }
-        if (Tablero[2] == 2 && Tablero[4] == 2 && Tablero[6] == 2)
-        {
-            cargarLose();
-        }
-
-        if (Tablero[0] == 1 && Tablero[4] == 1 && Tablero[8] == 1)
-        {
-            cargarWin();
-        }
-        if (Tablero[0] == 2 && Tablero[4] == 2 && Tablero[8] == 2)
-        {
-            cargarLose();
+            cargarEmpate();
         }
     }
 
     void cargarWin()
     {
-        ganaste = true;
+        gameOver = true;
         SceneLoader.GetComponent<SceneLoader>().CargarEscena(3);
-
     }
 
     void cargarLose()
     {
-        perdiste = true;
+        gameOver = true;
         SceneLoader.GetComponent<SceneLoader>().CargarEscena(2);
     }
 
-    public void checarEmpate()
+    void cargarEmpate()
     {
-        if (Tablero[0] != 0 && Tablero[1] != 0 && Tablero[2] != 0 && Tablero[3] != 0 && Tablero[4] != 0 && Tablero[5] != 0 && Tablero[6] != 0 && Tablero[7] != 0 && Tablero[8] != 0)
-        {
-            empate = true;
-            SceneLoader.GetComponent<SceneLoader>().CargarEscena(4);
-        }
-    }
-
-    public void colocarMarca(int _casilla, int _marca)
-    {
-        if(_casilla == 1)
-        {
-            if(_marca == 1)
-            {
-                Slot1Btn.image.sprite = Cruz;
-            }
-            if(_marca == 2)
-            {
-                Slot1Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 2)
-        {
-            if (_marca == 1)
-            {
-                Slot2Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot2Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 3)
-        {
-            if (_marca == 1)
-            {
-                Slot3Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot3Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 4)
-        {
-            if (_marca == 1)
-            {
-                Slot4Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot4Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 5)
-        {
-            if (_marca == 1)
-            {
-                Slot5Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot5Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 6)
-        {
-            if (_marca == 1)
-            {
-                Slot6Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot6Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 7)
-        {
-            if (_marca == 1)
-            {
-                Slot7Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot7Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 8)
-        {
-            if (_marca == 1)
-            {
-                Slot8Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot8Btn.image.sprite = Circulo;
-            }
-        }
-        if (_casilla == 9)
-        {
-            if (_marca == 1)
-            {
-                Slot9Btn.image.sprite = Cruz;
-            }
-            if (_marca == 2)
-            {
-                Slot9Btn.image.sprite = Circulo;
-            }
-        }
+        gameOver = true;
+        SceneLoader.GetComponent<SceneLoader>().CargarEscena(4);
     }
 }
